@@ -17,7 +17,6 @@ class MyListener : public ExampleFrameListener
 public:
 	MyListener(RenderWindow* win, Camera* cam, DynamicMesh* m) : ExampleFrameListener(win, cam)
 	{
-
 		azim = 0;
 		polar = 0;
 		radius = 500;
@@ -25,15 +24,15 @@ public:
 		cam->setPolygonMode(Ogre::PM_WIREFRAME);
 
 		mesh = m;
-		field1 = new SphericalField(Vector3(+0.8f,0,0), 1);
-		field2 = new SphericalField(Vector3(-0.8f,0,0), 1);
+		field1 = new SphericalField(Vector3(+1.0f,0,0), 1);
+		field2 = new SphericalField(Vector3(-1.0f,0,0), 1);
 		field = new MultiScalarField(field1, field2);
 		cubeMarcher = new MarchingCubes(mesh);
 
 		totalTime = 0;
 
 		cubeMarcher->SetScalarField(field);
-		cubeMarcher->Initialize(5.0f, 0.2f, 1);
+		cubeMarcher->Initialize(5.0f, 0.15f, 1);
 	}
 
 	DynamicMesh* mesh;
@@ -68,8 +67,13 @@ public:
 	bool frameStarted(const FrameEvent& evt)
 	{		
 		totalTime += evt.timeSinceLastFrame;
+
 		field1->SetRadius(0.78f + 0.2f * cos( 2.4f * totalTime));
+		field1->SetColor(ColourValue(1.0f,0,0));
+
 		field2->SetRadius(0.9f + 0.25f * cos( 1.8f * totalTime));
+		field2->SetColor(ColourValue(0,1.0f,0));
+
 		cubeMarcher->CreateMesh();
 
 		return ExampleFrameListener::frameStarted(evt);        
@@ -95,7 +99,7 @@ protected:
 	// Define what is in the scene
 	void createScene(void)
 	{
-		mSceneMgr->setAmbientLight( ColourValue( 0.3f, 0.3f, 0.3f ) );
+		mSceneMgr->setAmbientLight( 0.4f * ColourValue::White );
 
 		{
 			Light* light = mSceneMgr->createLight("Light1");
