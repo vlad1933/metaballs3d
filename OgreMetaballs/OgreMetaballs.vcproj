@@ -202,6 +202,14 @@
 				>
 			</File>
 			<File
+				RelativePath=".\MetaballsApp.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\MetaballsFrameListener.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\MultiScalarField.cpp"
 				>
 			</File>
@@ -245,6 +253,14 @@
 			</File>
 			<File
 				RelativePath=".\MarchingCubesData.h"
+				>
+			</File>
+			<File
+				RelativePath=".\MetaballsApp.h"
+				>
+			</File>
+			<File
+				RelativePath=".\MetaballsFrameListener.h"
 				>
 			</File>
 			<File
