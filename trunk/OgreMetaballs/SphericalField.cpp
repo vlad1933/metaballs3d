@@ -13,14 +13,16 @@ SphericalField::~SphericalField()
 {
 }
 
-float SphericalField::Value(const Vector3 &position) const
+FieldValue SphericalField::Sample(const Vector3& position) const 
 {
-	return m_radiusSquared / (m_center - position).squaredLength();
-}
+	FieldValue result;
+	Vector3 relativePos = position - m_center;
+	float length = relativePos.length();
+	float lengthSquared = length * length;
 
-Vector3 SphericalField::Gradient(const Vector3 &position) const
-{
-	Vector3 diff = position - m_center;
-	float length = diff.length();
-	return m_radiusSquared / (length * length * length) * diff;
+	result.Scalar = m_radiusSquared / lengthSquared;
+	result.Gradient =  m_radiusSquared / (lengthSquared * length) * relativePos;
+	result.Color = m_color;
+
+	return result;
 }
