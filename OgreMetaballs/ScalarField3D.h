@@ -2,7 +2,11 @@
 
 #include "Common.h"
 
-struct FieldValue
+//-----------------------------------
+// ScalarFieldValue
+//-----------------------------------
+
+struct ScalarFieldValue
 {
 	float Scalar;
 	Vector3 Gradient;
@@ -19,5 +23,5 @@ public:
 	ScalarField3D();
 	virtual ~ScalarField3D();
 
-	virtual FieldValue Sample(const Vector3& position) const = 0;
+	virtual ScalarFieldValue Sample(const Vector3& position) const = 0;
 };

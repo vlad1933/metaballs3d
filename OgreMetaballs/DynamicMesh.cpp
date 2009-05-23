@@ -16,6 +16,7 @@ DynamicMesh::~DynamicMesh()
 
 void DynamicMesh::BeginMesh()
 {
+	//Update or begin the object if needed
 	if(m_initialized)
 	{		
 		ManualObject::beginUpdate(0);
@@ -30,6 +31,7 @@ void DynamicMesh::BeginMesh()
 
 void DynamicMesh::EndMesh()
 {
+	//Finalize the mesh
 	ManualObject::end();
 }
 
@@ -40,6 +42,7 @@ int DynamicMesh::AddVertex(const Vertex& vertex)
 
 int DynamicMesh::AddVertex(const Vector3& position, const Vector3& normal, const ColourValue& color)
 {
+	//Declare a new vertex in the vertex buffer
 	ManualObject::position(position);
 	ManualObject::normal(normal);
 	ManualObject::colour(color);
@@ -49,11 +52,13 @@ int DynamicMesh::AddVertex(const Vector3& position, const Vector3& normal, const
 
 void DynamicMesh::AddTriangle(int idx1, int idx2, int idx3)
 {
+	//Add a triangle to the index buffer
 	triangle(idx1, idx2, idx3);
 }
 
 void DynamicMesh::EstimateSize(int size)
 {
+	//Allocate memory for future needs
 	estimateIndexCount(size);
 	estimateVertexCount(size);
 }

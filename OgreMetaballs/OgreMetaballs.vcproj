@@ -174,26 +174,6 @@
 				>
 			</File>
 			<File
-				RelativePath="G:\Metaballs\Metaballs\ImprovedTetrahedron.cpp"
-				>
-				<FileConfiguration
-					Name="Debug|Win32"
-					ExcludedFromBuild="true"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|Win32"
-					ExcludedFromBuild="true"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-					/>
-				</FileConfiguration>
-			</File>
-			<File
 				RelativePath=".\MarchingCubes.cpp"
 				>
 			</File>
@@ -225,10 +205,6 @@
 				RelativePath=".\SphericalField.cpp"
 				>
 			</File>
-			<File
-				RelativePath=".\Vertex.cpp"
-				>
-			</File>
 		</Filter>
 		<Filter
 			Name="Fichiers d&apos;en-tête"
@@ -241,10 +217,6 @@
 			</File>
 			<File
 				RelativePath=".\DynamicMesh.h"
-				>
-			</File>
-			<File
-				RelativePath="G:\Metaballs\Metaballs\ImprovedTetrahedron.h"
 				>
 			</File>
 			<File
