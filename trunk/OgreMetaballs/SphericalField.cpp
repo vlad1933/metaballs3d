@@ -16,12 +16,19 @@ SphericalField::~SphericalField()
 FieldValue SphericalField::Sample(const Vector3& position) const 
 {
 	FieldValue result;
-	Vector3 relativePos = position - m_center;
-	float length = relativePos.length();
-	float lengthSquared = length * length;
 
+	//Compute the relative position from the center
+	Vector3 relativePos = m_center - position;
+
+	float lengthSquared = relativePos.squaredLength();
+
+	//The scalar value is proportional to 1/r^2
 	result.Scalar = m_radiusSquared / lengthSquared;
-	result.Gradient =  m_radiusSquared / (lengthSquared * length) * relativePos;
+
+	//The gradient is is proportional to 1/r^3 and radial to the sphere
+	result.Gradient =  (result.Scalar / lengthSquared) * relativePos;
+
+	//The color is uniform
 	result.Color = m_color;
 
 	return result;
