@@ -13,8 +13,10 @@ public:
 	SphericalField(const Vector3& center, float radius);
 	~SphericalField();
 
-	virtual float Value(const Vector3& position) const;
-	virtual Vector3 Gradient(const Vector3 &position) const;
+	virtual float Value(const Vector3& position) const override;
+	virtual Vector3 Gradient(const Vector3 &position) const override;
+
+	void SetRadius(float r) { m_radius = r; m_radiusSquared = r*r; }
 
 private:
 	float m_radius;

@@ -176,6 +176,34 @@
 			<File
 				RelativePath="G:\Metaballs\Metaballs\ImprovedTetrahedron.cpp"
 				>
+				<FileConfiguration
+					Name="Debug|Win32"
+					ExcludedFromBuild="true"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32"
+					ExcludedFromBuild="true"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+					/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath=".\MarchingCubes.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\MarchingCubesData.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\MultiScalarField.cpp"
+				>
 			</File>
 			<File
 				RelativePath=".\OgreMain.cpp"
@@ -209,6 +237,18 @@
 			</File>
 			<File
 				RelativePath="G:\Metaballs\Metaballs\ImprovedTetrahedron.h"
+				>
+			</File>
+			<File
+				RelativePath=".\MarchingCubes.h"
+				>
+			</File>
+			<File
+				RelativePath=".\MarchingCubesData.h"
+				>
+			</File>
+			<File
+				RelativePath=".\MultiScalarField.h"
 				>
 			</File>
 			<File
