@@ -12,6 +12,6 @@ public:
 	ScalarField3D();
 	virtual ~ScalarField3D();
 
-	virtual float Value(Vector3 position) = 0;
-	virtual Vector3 Gradient(Vector3 v) = 0;
+	virtual float Value(const Vector3& position) const = 0;
+	virtual Vector3 Gradient(const Vector3& v) const = 0;
 };
