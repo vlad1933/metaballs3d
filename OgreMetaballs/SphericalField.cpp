@@ -1,5 +1,7 @@
 #include "SphericalField.h"
 
+#include "FieldHelper.h"
+
 //-----------------------------------
 // SphericalField
 //-----------------------------------
@@ -15,6 +17,8 @@ SphericalField::~SphericalField()
 
 ScalarFieldValue SphericalField::Sample(const Vector3& position) const 
 {
+//#define HELPER
+#ifndef HELPER
 	ScalarFieldValue result;
 
 	//Compute the relative position from the center
@@ -32,5 +36,11 @@ ScalarFieldValue SphericalField::Sample(const Vector3& position) const
 	//The color is uniform
 	result.Color = m_color;
 
+#else
+	ScalarFieldValue result; 
+	FieldHelper::CentralExpField(m_radius, m_center, position,result);
+	result.Color = m_color;
+
+#endif;
 	return result;
 }

@@ -3,6 +3,11 @@
 #include "Common.h"
 #include <vector>
 
+#define USE_OPENMP 0
+#if USE_OPENMP
+#include "omp.h"
+#endif
+
 //-----------------------------------
 // Forward declarations
 //-----------------------------------
@@ -23,14 +28,14 @@ struct SamplingGridVertice
 };
 
 //-----------------------------------
-// MarchingCubes
+// MarchingCubesImpl
 //-----------------------------------
 
-class MarchingCubes
+class MarchingCubesImpl
 {
 public:
-	MarchingCubes(DynamicMesh* meshBuilder);
-	~MarchingCubes();
+	MarchingCubesImpl(DynamicMesh* meshBuilder);
+	~MarchingCubesImpl();
 
 	void Initialize(float samplingSpaceSize, float samplingResolution, float samplingThreshold);
 	void CreateMesh();
@@ -38,8 +43,8 @@ public:
 	DynamicMesh* GetMeshBuilder() const { return m_meshBuilder; }
 	void SetMeshBuilder(DynamicMesh* meshBuilder) { m_meshBuilder = meshBuilder; }
 
-	ScalarField3D* GetScalarField() const { return m_scalarField; }
-	void SetScalarField(ScalarField3D* scalarField) { m_scalarField = scalarField; }
+	const ScalarField3D* GetScalarField() const { return m_scalarField; }
+	void SetScalarField(const ScalarField3D* scalarField) { m_scalarField = scalarField; }
 
 protected:
 	void SampleSpace();
@@ -58,5 +63,5 @@ private:
 	std::vector<SamplingGridVertice> m_samplingGridVertices;
 
 	DynamicMesh* m_meshBuilder;
-	ScalarField3D* m_scalarField;	
+	const ScalarField3D* m_scalarField;	
 };

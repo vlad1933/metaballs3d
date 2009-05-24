@@ -1,19 +1,19 @@
-#include "MultiScalarField.h"
+#include "AdditiveField.h"
 
 //-----------------------------------
-// MultiScalarField
+// AdditiveField
 //-----------------------------------
 
-MultiScalarField::MultiScalarField(ScalarField3D* field1,ScalarField3D* field2)
+AdditiveField::AdditiveField(ScalarField3D* field1,ScalarField3D* field2)
 : m_field1(field1), m_field2(field2)
 {
 }
 
-MultiScalarField::~MultiScalarField()
+AdditiveField::~AdditiveField()
 {
 }
 
-ScalarFieldValue MultiScalarField::Sample(const Vector3& position) const 
+ScalarFieldValue AdditiveField::Sample(const Vector3& position) const 
 {
 	//Sample the two base fields
 	const ScalarFieldValue& v1 = m_field1->Sample(position);
