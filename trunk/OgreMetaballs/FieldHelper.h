@@ -15,7 +15,6 @@ class FieldHelper
 public:
 	static void CentralExpField(float sphereRadius, const Vector3 sphereCenter, const Vector3 position, ScalarFieldValue& outValue)
 	{
-
 		Vector3 radialVector = (position - sphereCenter) / sphereRadius;
 		float radiusSquared = radialVector.squaredLength();
 
@@ -43,10 +42,6 @@ public:
 
 		outValue.Scalar = 0;
 		outValue.Gradient = Vector3::ZERO;
-
-		float test = 2 * radiusSquared;
-		test = test * test * test * test * test * test;
-		test = 1 - test;
 
 		if(radiusSquared < 0.5f)
 		{	
