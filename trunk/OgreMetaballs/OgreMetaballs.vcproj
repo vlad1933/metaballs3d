@@ -173,15 +173,7 @@
 			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}"
 			>
 			<File
-				RelativePath=".\FieldHelper.cpp"
-				>
-			</File>
-			<File
 				RelativePath=".\OgreMain.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\PlaneScene.cpp"
 				>
 			</File>
 			<Filter
@@ -189,6 +181,10 @@
 				>
 				<File
 					RelativePath=".\MetaballsAbstractScene.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\PlaneScene.cpp"
 					>
 				</File>
 				<File
@@ -201,6 +197,10 @@
 				>
 				<File
 					RelativePath=".\AdditiveField.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\FieldHelper.cpp"
 					>
 				</File>
 				<File
@@ -258,19 +258,15 @@
 				RelativePath=".\Common.h"
 				>
 			</File>
-			<File
-				RelativePath=".\FieldHelper.h"
-				>
-			</File>
-			<File
-				RelativePath=".\PlaneScene.h"
-				>
-			</File>
 			<Filter
 				Name="Scene"
 				>
 				<File
 					RelativePath=".\MetaballsAbstractScene.h"
+					>
+				</File>
+				<File
+					RelativePath=".\PlaneScene.h"
 					>
 				</File>
 				<File
@@ -283,6 +279,10 @@
 				>
 				<File
 					RelativePath=".\AdditiveField.h"
+					>
+				</File>
+				<File
+					RelativePath=".\FieldHelper.h"
 					>
 				</File>
 				<File
@@ -341,6 +341,10 @@
 			UniqueIdentifier="{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}"
 			>
 		</Filter>
+		<File
+			RelativePath=".\ClassDiagram1.cd"
+			>
+		</File>
 	</Files>
 	<Globals>
 	</Globals>

@@ -3,7 +3,7 @@
 #include "Common.h"
 #include <vector>
 
-#define USE_OPENMP 0
+#define USE_OPENMP 1
 #if USE_OPENMP
 #include "omp.h"
 #endif

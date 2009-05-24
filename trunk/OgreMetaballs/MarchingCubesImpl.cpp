@@ -164,7 +164,7 @@ void MarchingCubesImpl::SampleCube(int i, int j, int k)
 			//Store the vertices corresponding to the edge.
 			const SamplingGridVertice* cubeVertice0 = cubeVertices[MarchingCubesData::GetVertexInEdge(n,0)];
 			const SamplingGridVertice* cubeVertice1 = cubeVertices[MarchingCubesData::GetVertexInEdge(n,1)];
-		
+
 			//Determine the position of the intersection along the edge by linear interpolation.
 			float d0 = abs(cubeVertice0->Scalar - m_samplingThreshold);
 			float d1 = abs(cubeVertice1->Scalar - m_samplingThreshold);

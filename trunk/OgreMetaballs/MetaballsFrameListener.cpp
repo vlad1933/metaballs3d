@@ -16,7 +16,7 @@ MetaballsFrameListener::MetaballsFrameListener(RenderWindow* win, Camera* cam, D
 
 	m_meshBuilder = meshBuilder;
 
-	m_scene = new PlaneScene();
+	m_scene = new TorusScene();
 
 	m_scene->CreateFields();
 
