@@ -111,12 +111,15 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
-				Optimization="2"
+				Optimization="3"
+				InlineFunctionExpansion="2"
 				EnableIntrinsicFunctions="true"
+				FavorSizeOrSpeed="1"
 				AdditionalIncludeDirectories="D:\workspace\libraries\OgreSDK\samples\include;D:\workspace\libraries\OgreSDK\include"
 				PreprocessorDefinitions="WIN32;_WINDOWS;"
 				RuntimeLibrary="2"
 				EnableFunctionLevelLinking="true"
+				OpenMP="true"
 				WarningLevel="3"
 				DebugInformationFormat="3"
 			/>
@@ -170,27 +173,7 @@
 			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}"
 			>
 			<File
-				RelativePath=".\DynamicMesh.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\MarchingCubes.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\MarchingCubesData.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\MetaballsApp.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\MetaballsFrameListener.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\MultiScalarField.cpp"
+				RelativePath=".\FieldHelper.cpp"
 				>
 			</File>
 			<File
@@ -198,13 +181,73 @@
 				>
 			</File>
 			<File
-				RelativePath=".\ScalarField3D.cpp"
+				RelativePath=".\PlaneScene.cpp"
 				>
 			</File>
-			<File
-				RelativePath=".\SphericalField.cpp"
+			<Filter
+				Name="Scene"
 				>
-			</File>
+				<File
+					RelativePath=".\MetaballsAbstractScene.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\TorusScene.cpp"
+					>
+				</File>
+			</Filter>
+			<Filter
+				Name="Field"
+				>
+				<File
+					RelativePath=".\AdditiveField.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\PlaneField.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ScalarField3D.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\SphericalField.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ToroidalField.cpp"
+					>
+				</File>
+			</Filter>
+			<Filter
+				Name="MarchingCubes"
+				>
+				<File
+					RelativePath=".\DynamicMesh.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\MarchingCubesData.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\MarchingCubesImpl.cpp"
+					>
+				</File>
+			</Filter>
+			<Filter
+				Name="App"
+				>
+				<File
+					RelativePath=".\MetaballsApp.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\MetaballsFrameListener.cpp"
+					>
+				</File>
+			</Filter>
 		</Filter>
 		<Filter
 			Name="Fichiers d&apos;en-tête"
@@ -216,41 +259,81 @@
 				>
 			</File>
 			<File
-				RelativePath=".\DynamicMesh.h"
+				RelativePath=".\FieldHelper.h"
 				>
 			</File>
 			<File
-				RelativePath=".\MarchingCubes.h"
+				RelativePath=".\PlaneScene.h"
 				>
 			</File>
-			<File
-				RelativePath=".\MarchingCubesData.h"
+			<Filter
+				Name="Scene"
 				>
-			</File>
-			<File
-				RelativePath=".\MetaballsApp.h"
+				<File
+					RelativePath=".\MetaballsAbstractScene.h"
+					>
+				</File>
+				<File
+					RelativePath=".\TorusScene.h"
+					>
+				</File>
+			</Filter>
+			<Filter
+				Name="Field"
 				>
-			</File>
-			<File
-				RelativePath=".\MetaballsFrameListener.h"
+				<File
+					RelativePath=".\AdditiveField.h"
+					>
+				</File>
+				<File
+					RelativePath=".\PlaneField.h"
+					>
+				</File>
+				<File
+					RelativePath=".\ScalarField3D.h"
+					>
+				</File>
+				<File
+					RelativePath=".\SphericalField.h"
+					>
+				</File>
+				<File
+					RelativePath=".\ToroidalField.h"
+					>
+				</File>
+			</Filter>
+			<Filter
+				Name="MarchingCubes"
 				>
-			</File>
-			<File
-				RelativePath=".\MultiScalarField.h"
+				<File
+					RelativePath=".\DynamicMesh.h"
+					>
+				</File>
+				<File
+					RelativePath=".\MarchingCubesData.h"
+					>
+				</File>
+				<File
+					RelativePath=".\MarchingCubesImpl.h"
+					>
+				</File>
+				<File
+					RelativePath=".\Vertex.h"
+					>
+				</File>
+			</Filter>
+			<Filter
+				Name="App"
 				>
-			</File>
-			<File
-				RelativePath=".\ScalarField3D.h"
-				>
-			</File>
-			<File
-				RelativePath=".\SphericalField.h"
-				>
-			</File>
-			<File
-				RelativePath=".\Vertex.h"
-				>
-			</File>
+				<File
+					RelativePath=".\MetaballsApp.h"
+					>
+				</File>
+				<File
+					RelativePath=".\MetaballsFrameListener.h"
+					>
+				</File>
+			</Filter>
 		</Filter>
 		<Filter
 			Name="Fichiers de ressources"

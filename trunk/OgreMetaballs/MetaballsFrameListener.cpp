@@ -1,9 +1,10 @@
 #include "MetaballsFrameListener.h"
 
 #include "DynamicMesh.h"
-#include "SphericalField.h"
-#include "MultiScalarField.h"
-#include "MarchingCubes.h"
+#include "MarchingCubesImpl.h"
+#include "ScalarField3D.h"
+#include "TorusScene.h"
+#include "PlaneScene.h"
 
 //-----------------------------------
 // MetaballsFrameListener
@@ -11,27 +12,23 @@
 
 MetaballsFrameListener::MetaballsFrameListener(RenderWindow* win, Camera* cam, DynamicMesh* meshBuilder) : ExampleFrameListener(win, cam)
 {
-	//Initialize the camera coordinates
-	m_camAzimuth = 0;
-	m_camPolar = 0;
-	m_camRadius = 500;
-
 	m_totalTime = 0;
-
-	//Create the scalar fields
-	m_field1 = new SphericalField(Vector3(+1.0f,0,0), 1);
-	m_field2 = new SphericalField(Vector3(-1.0f,0,0), 1);
-	m_finalField = new MultiScalarField(m_field1, m_field2);
-
-	m_field1->SetColor(ColourValue(1.0f,0,0));
-	m_field2->SetColor(ColourValue(0,1.0f,0));
 
 	m_meshBuilder = meshBuilder;
 
+	m_scene = new PlaneScene();
+
+	m_scene->CreateFields();
+
 	//Create the object responsible for the mesh creation
-	m_marchingCube = new MarchingCubes(m_meshBuilder);
-	m_marchingCube->SetScalarField(m_finalField);
-	m_marchingCube->Initialize(5.0f, 0.15f, 1);
+	m_marchingCube = new MarchingCubesImpl(m_meshBuilder);
+	m_marchingCube->SetScalarField(m_scene->GetScalarField());
+	m_marchingCube->Initialize(m_scene->GetSceneSize(), m_scene->GetSpaceResolution(), 1);
+
+	//Initialize the camera coordinates
+	m_camAzimuth = 0;
+	m_camPolar = 0;
+	m_camRadius = 120 * m_scene->GetSceneSize();
 }
 
 MetaballsFrameListener::~MetaballsFrameListener(void)
@@ -40,7 +37,7 @@ MetaballsFrameListener::~MetaballsFrameListener(void)
 
 void MetaballsFrameListener::moveCamera()
 {
-	//Change the camera coordinates according to the mouse inout
+	//Change the camera coordinates according to the mouse input
 	m_camAzimuth += mRotX;
 	m_camPolar += mRotY;
 
@@ -65,10 +62,7 @@ bool MetaballsFrameListener::frameStarted(const FrameEvent& evt)
 {		
 
 
-	if(mKeyboard->isKeyDown(OIS::KC_SPACE))
-	{
-	}
-	else
+	if(!mKeyboard->isKeyDown(OIS::KC_SPACE))
 	{
 		m_totalTime += evt.timeSinceLastFrame;
 	}
@@ -82,7 +76,7 @@ bool MetaballsFrameListener::frameStarted(const FrameEvent& evt)
 		mCamera->setPolygonMode(Ogre::PM_SOLID);
 	}
 
-	UpdateFields();
+	m_scene->UpdateFields(m_totalTime);
 
 	//Recreate the mesh
 	m_marchingCube->CreateMesh();
@@ -93,12 +87,4 @@ bool MetaballsFrameListener::frameStarted(const FrameEvent& evt)
 bool MetaballsFrameListener::frameEnded(const FrameEvent& evt)
 {
 	return ExampleFrameListener::frameEnded(evt);        
-}
-
-void MetaballsFrameListener::UpdateFields()
-{
-	//Update the fields over time
-	m_field1->SetRadius(0.78f + 0.2f * cos( 2.4f * m_totalTime));
-	m_field2->SetRadius(0.9f + 0.25f * cos( 1.8f * m_totalTime));
-
 }

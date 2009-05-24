@@ -1,24 +1,25 @@
-#include "MarchingCubes.h"
+#include "MarchingCubesImpl.h"
 
 #include "ScalarField3D.h"
 #include "DynamicMesh.h"
 #include "MarchingCubesData.h"
 
 //-----------------------------------
-// MarchingCubes
+// MarchingCubesImpl
 //-----------------------------------
 
-MarchingCubes::MarchingCubes(DynamicMesh* meshBuilder)
+MarchingCubesImpl::MarchingCubesImpl(DynamicMesh* meshBuilder)
 : m_meshBuilder(meshBuilder), m_scalarField(NULL)
 {
 }
 
-MarchingCubes::~MarchingCubes()
-{
+
+MarchingCubesImpl::~MarchingCubesImpl()
+{ 
 }
 
 
-void MarchingCubes::Initialize(float samplingSpaceSize, float samplingResolution, float samplingThreshold)
+void MarchingCubesImpl::Initialize(float samplingSpaceSize, float samplingResolution, float samplingThreshold)
 {
 	m_samplingSpaceSize = samplingSpaceSize;
 	m_samplingResolution = samplingResolution;
@@ -55,7 +56,12 @@ void MarchingCubes::Initialize(float samplingSpaceSize, float samplingResolution
 	}
 }
 
-void MarchingCubes::CreateMesh()
+SamplingGridVertice& MarchingCubesImpl::GetGridVertice(int i, int j, int k)
+{
+	return m_samplingGridVertices[i + j * m_nbrSamples + k * m_nbrSamples * m_nbrSamples];
+}
+
+void MarchingCubesImpl::CreateMesh()
 {
 	//Begin the construction of the mesh
 	GetMeshBuilder()->BeginMesh();
@@ -66,14 +72,24 @@ void MarchingCubes::CreateMesh()
 	//For each cube defined by the grid, emit geometry if the cube intersect the surface.
 	March();
 
+	Vertex v;
+	m_meshBuilder->AddVertex(v);
+	m_meshBuilder->AddVertex(v);
+	m_meshBuilder->AddVertex(v);
+
+	m_meshBuilder->AddTriangle(0,1,2);
+
 	//Finalize the mesh
 	GetMeshBuilder()->EndMesh();
 }
 
-void MarchingCubes::SampleSpace()
+void MarchingCubesImpl::SampleSpace()
 {
+	#if USE_OPENMP
+	#pragma omp parallel for  
+	#endif
 	for(int i=0; i<m_nbrSamples; i++)
-	{
+	{		
 		for(int j=0; j<m_nbrSamples; j++)
 		{
 			for(int k=0; k<m_nbrSamples; k++)
@@ -92,12 +108,12 @@ void MarchingCubes::SampleSpace()
 	}
 }
 
-void MarchingCubes::March()
+void MarchingCubesImpl::March()
 {
 	for(int i=0; i<m_nbrSamples-1; i++)
 	{
 		for(int j=0; j<m_nbrSamples-1; j++)
-		{
+		{			
 			for(int k=0; k<m_nbrSamples-1; k++)
 			{
 				SampleCube(j,i,k);
@@ -106,10 +122,11 @@ void MarchingCubes::March()
 	}
 }
 
-void MarchingCubes::SampleCube(int i, int j, int k)
+void MarchingCubesImpl::SampleCube(int i, int j, int k)
 {
-	//Store the vertices of the cube defined by i,j and k
 	SamplingGridVertice* cubeVertices[8];
+
+	//Store the vertices of the cube defined by i,j and k
 	cubeVertices[0] = &GetGridVertice(i  ,j+1,k);
 	cubeVertices[1] = &GetGridVertice(i+1,j+1,k);
 	cubeVertices[2] = &GetGridVertice(i+1,j  ,k);
@@ -124,50 +141,55 @@ void MarchingCubes::SampleCube(int i, int j, int k)
 	int cubeIndex = 0;
 	for (int n=0; n<8; n++)
 	{
-		if (cubeVertices[n]->Scalar < m_samplingThreshold) 
+		if (cubeVertices[n]->Scalar <= m_samplingThreshold) 
 			cubeIndex |= 1<<n;
 	}
 
-	//An edge of the cube intersect the surface if one vertice is inside of the surface and the other is outside.
-	//Based on the previous index, we can use a static lookup table to get the list of triangles we need to generate.
-	//The table return an array of egde indexes, from 0 to 11, ended by a -1 value.
-	//Each three edges define a triangle.
-	const int* cubeEdgeArray = GetTriangleList(cubeIndex);
+	//An edge of the cube intersect the surface if one vertice 
+	// is inside of the surface and the other is outside.
+	//Based on the previous index, we can use a static lookup table to get the list 
+	// of vertex and triangles we need to generate.
+	Vertex meshVertex[12];
+	int vertexIdxs[12];
 
-	//For each intersected edges in the cube
-	for(int n = 0; cubeEdgeArray[n*3] != -1; n++)
-	{	
-		int lastVertexIdx = 0;
-		for(int m = 0; m<3; m++)
+	//The table return a bit field in which the #n bit is set to 1 if the edge #n intersect the surface
+	int intersectionList = MarchingCubesData::GetVertexList(cubeIndex);
+
+	//For each edge of the cube
+	for(int n=0; n<12; n++)
+	{
+		//If the edge is intersected
+		if(intersectionList & 1<<n)
 		{
 			//Store the vertices corresponding to the edge.
-			const SamplingGridVertice& cubeVertice0 = *cubeVertices[GetVertexInEdge(cubeEdgeArray[n*3 + m],0)];
-			const SamplingGridVertice& cubeVertice1 = *cubeVertices[GetVertexInEdge(cubeEdgeArray[n*3 + m],1)];
-
+			const SamplingGridVertice* cubeVertice0 = cubeVertices[MarchingCubesData::GetVertexInEdge(n,0)];
+			const SamplingGridVertice* cubeVertice1 = cubeVertices[MarchingCubesData::GetVertexInEdge(n,1)];
+		
 			//Determine the position of the intersection along the edge by linear interpolation.
-			float d0 = abs(cubeVertice0.Scalar - m_samplingThreshold);
-			float d1 = abs(cubeVertice1.Scalar - m_samplingThreshold);
+			float d0 = abs(cubeVertice0->Scalar - m_samplingThreshold);
+			float d1 = abs(cubeVertice1->Scalar - m_samplingThreshold);
 			float lerp = d1 / (d0+d1);
 
-			//Generate a vertex at the intersection
+			//Generate the vertex at the intersection
 			Vertex triangleVertex;
-			triangleVertex.Position = lerp * cubeVertice0.Position + (1-lerp) * cubeVertice1.Position;
-			triangleVertex.Normal = lerp * cubeVertice0.Gradient + (1-lerp) * cubeVertice1.Gradient;
-			triangleVertex.Color = lerp * cubeVertice0.Color + (1-lerp) * cubeVertice1.Color;
-
+			triangleVertex.Position = lerp * cubeVertice0->Position + (1-lerp) * cubeVertice1->Position;
+			triangleVertex.Normal = lerp * cubeVertice0->Gradient + (1-lerp) * cubeVertice1->Gradient;
+			triangleVertex.Color = lerp * cubeVertice0->Color + (1-lerp) * cubeVertice1->Color;
+			
 			triangleVertex.Normal.normalise();
 
-			//Add the vertex to the mesh
-			lastVertexIdx = GetMeshBuilder()->AddVertex(triangleVertex);
+			vertexIdxs[n] = GetMeshBuilder()->AddVertex(triangleVertex);
 		}
-
-		//For every three vertex, add a triangle to the mesh
-		GetMeshBuilder()->AddTriangle(lastVertexIdx-1, lastVertexIdx-2, lastVertexIdx);
 	}
-}
 
-SamplingGridVertice& MarchingCubes::GetGridVertice(int i, int j, int k)
-{
-	int idx = i + j * m_nbrSamples + k * m_nbrSamples * m_nbrSamples;
-	return m_samplingGridVertices[idx];
+	//The table return an array of egde indexes, from 0 to 11, ended by a -1 value.
+	//Every three edges define a triangle.
+	const int* cubeEdgeArray = MarchingCubesData::GetTriangleList(cubeIndex);
+	for(int n = 0; cubeEdgeArray[n] != -1; n+=3)
+	{	
+		GetMeshBuilder()->AddTriangle(
+			vertexIdxs[cubeEdgeArray[n+1]], 
+			vertexIdxs[cubeEdgeArray[n]], 
+			vertexIdxs[cubeEdgeArray[n+2]]);
+	}
 }

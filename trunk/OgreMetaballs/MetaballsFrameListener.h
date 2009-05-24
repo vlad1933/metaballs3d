@@ -8,10 +8,9 @@
 //-----------------------------------
 
 class DynamicMesh;
+class MarchingCubesImpl;
 class ScalarField3D;
-class SphericalField;
-class MultiScalarField;
-class MarchingCubes;
+class MetaballsAbstractScene;
 
 //-----------------------------------
 // MetaballsFrameListener
@@ -33,10 +32,8 @@ protected:
 
 private:
 	DynamicMesh* m_meshBuilder;
-	MultiScalarField* m_finalField;
-	SphericalField* m_field1;
-	SphericalField* m_field2;
-	MarchingCubes* m_marchingCube;
+	MarchingCubesImpl* m_marchingCube;
+	MetaballsAbstractScene* m_scene;
 
 	float m_totalTime;
 

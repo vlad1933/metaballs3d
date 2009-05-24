@@ -24,4 +24,9 @@ public:
 	virtual ~ScalarField3D();
 
 	virtual ScalarFieldValue Sample(const Vector3& position) const = 0;
+
+	void SetColor(ColourValue color) { m_color = color; }
+
+protected:
+	ColourValue m_color;
 };
