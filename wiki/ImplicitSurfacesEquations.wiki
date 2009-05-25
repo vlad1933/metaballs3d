@@ -1,0 +1,6 @@
+#summary Various surfaces equations.
+
+= Equations=
+
+Heart surface: (2x^2+y^2+z^2-1)^6-(0.1x^2+y^2)z^3
+http://www.ann.jussieu.fr/~frey/papers/reconstruction/Lewiner%20T.,%20Robust%20adaptive%20meshes%20for%20implicit%20surfaces.pdf
