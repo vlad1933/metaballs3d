@@ -26,7 +26,7 @@ public:
 		outValue.Gradient = -2 * outValue.Scalar * radialVector;
 	}
 
-	static void CentralField(float sphereRadius, const Vector3 sphereCenter, const Vector3 position, ScalarFieldValue& outValue)
+	static ScalarFieldValue CentralField(float sphereRadius, const Vector3 sphereCenter, const Vector3 position)
 	{
 		// Spherical field with polynomial attenuation
 		//
@@ -34,10 +34,12 @@ public:
 		// F(r) = 0						, r^2 >= 0.5f, 
 		// F(r) = 4*(r^4 - r^2 + 0.25)	, 0 < r^2 < 0.5f 
 		//
-		// grad F(R) = 1/r * dF/dr . R
+		// grad F(R) = 1/|R| * dF/dr . R
 		// grad F(R) = (16r^2 - 8) . R
 
-		Vector3 radialVector = (position - sphereCenter) / sphereRadius;
+        ScalarFieldValue outValue;
+ 
+        Vector3 radialVector = (position - sphereCenter) / sphereRadius;
 		float radiusSquared = radialVector.squaredLength();
 
 		outValue.Scalar = 0;
@@ -48,5 +50,7 @@ public:
 			outValue.Scalar = 4 * ( radiusSquared * radiusSquared - radiusSquared + 0.25f );
 			outValue.Gradient = (16 * radiusSquared - 8) * radialVector;
 		}
+
+        return outValue;
 	}
 };

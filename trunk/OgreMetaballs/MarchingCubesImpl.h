@@ -1,9 +1,11 @@
 #pragma once
 
 #include "Common.h"
+#include "ScalarField3D.h"
+
 #include <vector>
 
-#define USE_OPENMP 1
+#define USE_OPENMP 0
 #if USE_OPENMP
 #include "omp.h"
 #endif
@@ -13,7 +15,6 @@
 //-----------------------------------
 
 class DynamicMesh;
-class ScalarField3D;
 
 //-----------------------------------
 // SamplingGridVertice
@@ -21,10 +22,8 @@ class ScalarField3D;
 
 struct SamplingGridVertice
 {
-	float Scalar;
-	Vector3 Gradient;
 	Vector3 Position;
-	ColourValue Color;
+    ScalarFieldValue FieldValue;
 };
 
 //-----------------------------------

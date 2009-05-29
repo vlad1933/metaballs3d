@@ -60,8 +60,6 @@ void MetaballsFrameListener::moveCamera()
 
 bool MetaballsFrameListener::frameStarted(const FrameEvent& evt)
 {		
-
-
 	if(!mKeyboard->isKeyDown(OIS::KC_SPACE))
 	{
 		m_totalTime += evt.timeSinceLastFrame;
@@ -74,7 +72,7 @@ bool MetaballsFrameListener::frameStarted(const FrameEvent& evt)
 	else
 	{
 		mCamera->setPolygonMode(Ogre::PM_SOLID);
-	}
+	} 
 
 	m_scene->UpdateFields(m_totalTime);
 
