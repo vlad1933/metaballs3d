@@ -27,7 +27,7 @@ ScalarFieldValue AdditiveField::Sample(const Vector3& position) const
 
 	//The color is linearly interpolated
 	float lerp = v1.Scalar / result.Scalar;
-	result.Color = lerp * v1.Color + (1-lerp) * v2.Color;
+	result.Color = v1.Color;//lerp * v1.Color + (1-lerp) * v2.Color;
 
 	return result;
 }

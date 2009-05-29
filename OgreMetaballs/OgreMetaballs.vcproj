@@ -40,7 +40,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="D:\workspace\libraries\OgreSDK\samples\include;D:\workspace\libraries\OgreSDK\include"
+				AdditionalIncludeDirectories="$(OGRE_HOME)\samples\include;$(OGRE_HOME)\include"
 				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
@@ -60,7 +60,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalDependencies="OgreMain_d.lib OIS_d.lib"
-				AdditionalLibraryDirectories="D:\workspace\libraries\OgreSDK\lib"
+				AdditionalLibraryDirectories="$(OGRE_HOME)\lib"
 				GenerateDebugInformation="true"
 				TargetMachine="1"
 			/>
@@ -115,11 +115,11 @@
 				InlineFunctionExpansion="2"
 				EnableIntrinsicFunctions="true"
 				FavorSizeOrSpeed="1"
-				AdditionalIncludeDirectories="D:\workspace\libraries\OgreSDK\samples\include;D:\workspace\libraries\OgreSDK\include"
+				AdditionalIncludeDirectories="$(OGRE_HOME)\samples\include;$(OGRE_HOME)\include"
 				PreprocessorDefinitions="WIN32;_WINDOWS;"
 				RuntimeLibrary="2"
 				EnableFunctionLevelLinking="true"
-				OpenMP="true"
+				OpenMP="false"
 				WarningLevel="3"
 				DebugInformationFormat="3"
 			/>
@@ -135,7 +135,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalDependencies="OgreMain.lib OIS.lib"
-				AdditionalLibraryDirectories="D:\workspace\libraries\OgreSDK\lib"
+				AdditionalLibraryDirectories="$(OGRE_HOME)\lib"
 				GenerateDebugInformation="true"
 				OptimizeReferences="2"
 				EnableCOMDATFolding="2"
@@ -234,6 +234,15 @@
 				<File
 					RelativePath=".\MarchingCubesImpl.cpp"
 					>
+					<FileConfiguration
+						Name="Release|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							AssemblerOutput="4"
+							AssemblerListingLocation="asm"
+						/>
+					</FileConfiguration>
 				</File>
 			</Filter>
 			<Filter
@@ -341,10 +350,6 @@
 			UniqueIdentifier="{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}"
 			>
 		</Filter>
-		<File
-			RelativePath=".\ClassDiagram1.cd"
-			>
-		</File>
 	</Files>
 	<Globals>
 	</Globals>

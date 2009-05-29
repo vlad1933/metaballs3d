@@ -41,7 +41,7 @@ ScalarFieldValue ToroidalField::Sample(const Vector3& position) const
 	result.Scalar = m_sectionRadius * m_sectionRadius / lengthSquared;
 
 	//The gradient is is proportional to 1/r^3 and radial to the center of the section
-	result.Gradient = 2 * (result.Scalar) / lengthSquared * relativePos;
+    result.Gradient = 2 * m_sectionRadius * m_sectionRadius / (lengthSquared*lengthSquared) * relativePos;
 
 	//The color is uniform
 	result.Color = m_color;
