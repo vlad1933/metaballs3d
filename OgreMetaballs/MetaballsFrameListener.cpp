@@ -5,6 +5,7 @@
 #include "ScalarField3D.h"
 #include "TorusScene.h"
 #include "PlaneScene.h"
+#include "HeartScene.h"
 
 //-----------------------------------
 // MetaballsFrameListener
