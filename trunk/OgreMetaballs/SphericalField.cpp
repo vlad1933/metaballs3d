@@ -17,7 +17,7 @@ SphericalField::~SphericalField()
 
 ScalarFieldValue SphericalField::Sample(const Vector3& position) const 
 {
-#define HELPER
+//#define HELPER
 #ifndef HELPER
 	ScalarFieldValue result;
 

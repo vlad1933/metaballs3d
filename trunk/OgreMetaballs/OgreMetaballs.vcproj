@@ -173,6 +173,14 @@
 			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}"
 			>
 			<File
+				RelativePath=".\HeartField.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\HeartScene.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\OgreMain.cpp"
 				>
 			</File>
@@ -265,6 +273,14 @@
 			>
 			<File
 				RelativePath=".\Common.h"
+				>
+			</File>
+			<File
+				RelativePath=".\HeartField.h"
+				>
+			</File>
+			<File
+				RelativePath=".\HeartScene.h"
 				>
 			</File>
 			<Filter
