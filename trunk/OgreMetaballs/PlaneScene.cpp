@@ -24,8 +24,10 @@ void PlaneScene::CreateFields()
 	SphericalField* sField1 = new SphericalField(Vector3(1.3f,0,0.75f),0.85f);
 	SphericalField* sField2 = new SphericalField(Vector3(-0.8f,0,-0.95f),1.15f);
 
-	m_finalField = new AdditiveField(m_field1, sField1);
-	m_finalField = new AdditiveField(m_finalField, sField2);
+	m_finalField = new AdditiveField();
+	m_finalField->AddField(m_field1);
+	m_finalField->AddField(sField1);
+	m_finalField->AddField(sField2);
 
 	m_field1->SetColor(ColourValue::White);
 }

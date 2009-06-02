@@ -16,15 +16,19 @@ PlaneField::~PlaneField()
 {
 }
 
-ScalarFieldValue PlaneField::Sample(const Vector3& position) const
+float PlaneField::Scalar(const Vector3& position) const
 {
-	ScalarFieldValue result;
-
 	Vector3 relativePos = position - m_origin * m_axis;
+	return relativePos.dotProduct(m_axis)+1;
+}
 
-	result.Scalar = relativePos.dotProduct(m_axis)+1;
-	result.Gradient = m_axis;
-	result.Color = m_color;
+Vector3 PlaneField::Gradient(const Vector3& position) const
+{
+	return m_axis;
+}
 
-	return result;
+ColourValue PlaneField::Color(const Vector3& position) const
+{
+	//The color is uniform
+	return m_color;
 }

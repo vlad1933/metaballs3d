@@ -6,6 +6,7 @@
 #include "TorusScene.h"
 #include "PlaneScene.h"
 #include "HeartScene.h"
+#include "CascadeScene.h"
 
 //-----------------------------------
 // MetaballsFrameListener
@@ -17,19 +18,20 @@ MetaballsFrameListener::MetaballsFrameListener(RenderWindow* win, Camera* cam, D
 
 	m_meshBuilder = meshBuilder;
 
-	m_scene = new TorusScene();
+	m_scene = NULL;
 
-	m_scene->CreateFields();
+	m_nbrScene = 2;
+	m_currentSceneId = 0;
 
-	//Create the object responsible for the mesh creation
-	m_marchingCube = new MarchingCubesImpl(m_meshBuilder);
-	m_marchingCube->SetScalarField(m_scene->GetScalarField());
-	m_marchingCube->Initialize(m_scene->GetSceneSize(), m_scene->GetSpaceResolution(), 1);
+	ResetScene(m_currentSceneId);
 
 	//Initialize the camera coordinates
 	m_camAzimuth = 0;
 	m_camPolar = 0;
-	m_camRadius = 120 * m_scene->GetSceneSize();
+	m_camRadius = 140 * m_scene->GetSceneSize();
+
+	m_keyboardDelayMax = 2.0f;
+	m_keyboardDelay = 0; 
 }
 
 MetaballsFrameListener::~MetaballsFrameListener(void)
@@ -59,8 +61,40 @@ void MetaballsFrameListener::moveCamera()
 	mCamera->lookAt(Vector3::ZERO);
 }
 
+void MetaballsFrameListener::ResetScene(int sceneId)
+{
+	if(m_scene != NULL)
+	{
+		delete m_scene;
+	}
+
+	m_currentSceneId = sceneId % m_nbrScene;
+
+	switch (m_currentSceneId)
+	{  
+	case 0:
+		m_scene = new CascadeScene();
+		break;
+	case 1:
+		m_scene = new TorusScene();
+		break;
+	default:
+		m_scene = new CascadeScene();
+		break;
+	}
+
+	m_scene->CreateFields();
+
+	//Create the object responsible for the mesh creation
+	m_marchingCube = new MarchingCubesImpl(m_meshBuilder);
+	m_marchingCube->SetScalarField(m_scene->GetScalarField());
+	m_marchingCube->Initialize(m_scene->GetSceneSize(), m_scene->GetSpaceResolution(), 1);
+}
+
 bool MetaballsFrameListener::frameStarted(const FrameEvent& evt)
 {		
+	m_keyboardDelay -= evt.timeSinceLastFrame;
+
 	if(!mKeyboard->isKeyDown(OIS::KC_SPACE))
 	{
 		m_totalTime += evt.timeSinceLastFrame;
@@ -74,6 +108,22 @@ bool MetaballsFrameListener::frameStarted(const FrameEvent& evt)
 	{
 		mCamera->setPolygonMode(Ogre::PM_SOLID);
 	} 
+
+	if(mKeyboard->isKeyDown(OIS::KC_ADD) && m_keyboardDelay<0)
+	{
+		ResetScene(m_currentSceneId+1);
+		m_keyboardDelay = m_keyboardDelayMax;
+	}
+	if(mKeyboard->isKeyDown(OIS::KC_MINUS) && m_keyboardDelay<0)
+	{
+		ResetScene(m_currentSceneId-1);
+		m_keyboardDelay = m_keyboardDelayMax;
+	}
+
+	if(!mKeyboard->isKeyDown(OIS::KC_MINUS) && !mKeyboard->isKeyDown(OIS::KC_ADD))
+	{
+		m_keyboardDelay = 0;
+	}
 
 	m_scene->UpdateFields(m_totalTime);
 

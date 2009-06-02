@@ -25,10 +25,12 @@ void TorusScene::CreateFields()
 	m_field4 = new SphericalField(Vector3(1.6f,0,0), 0.45f);
 	m_field2 = new ToroidalField(Vector3(0,0,0), 1.6f, 0.55f);
 
-	m_finalField = new AdditiveField(m_field1, m_field4);
-	m_finalField = new AdditiveField(m_finalField, m_field3);
-	m_finalField = new AdditiveField(m_finalField, m_field2);
-
+	m_finalField = new AdditiveField();
+	m_finalField->AddField(m_field1);
+	m_finalField->AddField(m_field2);
+	m_finalField->AddField(m_field3);
+	m_finalField->AddField(m_field4);
+	
 	m_field1->SetColor(ColourValue::White);
 	m_field2->SetColor(ColourValue(0,1.0f,0));
 	m_field3->SetColor(ColourValue(0,0,1.0f));
@@ -62,7 +64,7 @@ float TorusScene::GetSceneSize() const
 
 float TorusScene::GetSpaceResolution() const
 {
-	return 0.2f;
+	return 0.18f;
 }
 
 

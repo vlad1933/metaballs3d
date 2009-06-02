@@ -13,7 +13,9 @@ public:
 	SphericalField(const Vector3& center, float radius);
 	virtual ~SphericalField();
 
-	virtual ScalarFieldValue Sample(const Vector3& position) const override;
+	virtual float Scalar(const Vector3& position) const override;
+	virtual Vector3 Gradient(const Vector3& position) const override;
+	virtual ColourValue Color(const Vector3& position) const override;
 
 	void SetCenter(Vector3 center) { m_center = center; }
 	void SetRadius(float r) { m_radius = r; m_radiusSquared = r*r; }

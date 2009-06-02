@@ -19,7 +19,7 @@ void MetaballsApp::createScene()
 {
 	//The scene lighting is composed of 3 directional lights and an ambient light
 	mSceneMgr->setAmbientLight( 0.2f * ColourValue::White );
-
+/*
 	//A red light on the X axis	
 	{
 		Light* light = mSceneMgr->createLight("Light3");
@@ -44,6 +44,34 @@ void MetaballsApp::createScene()
 		light->setType(Light::LT_DIRECTIONAL);
 		light->setDirection(Vector3(0,0,1));
 		light->setDiffuseColour(ColourValue(0,0,1));
+		light->setSpecularColour(ColourValue(.25, .25, .25));
+	}
+*/
+
+	//A blue light on the Z axis
+	{
+		Light* light = mSceneMgr->createLight("Light1");
+		light->setType(Light::LT_DIRECTIONAL);
+		light->setDirection(Vector3(0.0f,0.2f,0.5f));
+		light->setDiffuseColour(ColourValue(0,0,1));
+		light->setSpecularColour(ColourValue(.25, .25, .25));
+	}
+
+	//A blue light on the Z axis
+	{
+		Light* light = mSceneMgr->createLight("Light2");
+		light->setType(Light::LT_DIRECTIONAL);
+		light->setDirection(Vector3(0.34f,-0.2f,-0.17f));
+		light->setDiffuseColour(ColourValue(0.1f,0.2f,0.8f));
+		light->setSpecularColour(ColourValue(.25, .25, .25));
+	}
+
+	//A blue light on the Z axis
+	{
+		Light* light = mSceneMgr->createLight("Light3");
+		light->setType(Light::LT_DIRECTIONAL);
+		light->setDirection(Vector3(-0.34f,+0.2f,-0.17f));
+		light->setDiffuseColour(ColourValue(0.3f,0.2f,0.6f));
 		light->setSpecularColour(ColourValue(.25, .25, .25));
 	}
 

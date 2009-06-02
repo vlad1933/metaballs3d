@@ -5,7 +5,7 @@
 
 #include <vector>
 
-#define USE_OPENMP 0
+#define USE_OPENMP 1
 #if USE_OPENMP
 #include "omp.h"
 #endif
@@ -23,7 +23,16 @@ class DynamicMesh;
 struct SamplingGridVertice
 {
 	Vector3 Position;
-    ScalarFieldValue FieldValue;
+	float ScalarValue;
+};
+
+//-----------------------------------
+// SamplingGridCube
+//-----------------------------------
+
+struct SamplingGridCube
+{
+	SamplingGridVertice* Vertices[8];
 };
 
 //-----------------------------------
@@ -48,9 +57,10 @@ public:
 protected:
 	void SampleSpace();
 	void March();
-	void SampleCube(int i, int j, int k);
+	void SampleCube(SamplingGridCube& cube);
 
 	SamplingGridVertice& GetGridVertice(int i, int j, int k);
+	SamplingGridCube& GetGridCube(int i, int j, int k);
 
 private:
 	float m_samplingSpaceSize;
@@ -60,6 +70,7 @@ private:
 	int m_nbrSamples;
 
 	std::vector<SamplingGridVertice> m_samplingGridVertices;
+	std::vector<SamplingGridCube> m_samplingGridCubes;
 
 	DynamicMesh* m_meshBuilder;
 	const ScalarField3D* m_scalarField;	

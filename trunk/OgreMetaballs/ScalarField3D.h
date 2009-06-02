@@ -23,7 +23,9 @@ public:
 	ScalarField3D();
 	virtual ~ScalarField3D();
 
-	virtual ScalarFieldValue Sample(const Vector3& position) const = 0;
+	virtual float Scalar(const Vector3& position) const = 0;
+	virtual Vector3 Gradient(const Vector3& position) const = 0;
+	virtual ColourValue Color(const Vector3& position) const = 0;
 
 	void SetColor(ColourValue color) { m_color = color; }
 

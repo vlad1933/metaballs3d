@@ -28,7 +28,7 @@ protected:
 	bool frameStarted(const FrameEvent& evt) override;
 	bool frameEnded(const FrameEvent& evt) override;
 
-	void UpdateFields();
+	void ResetScene(int sceneId);
 
 private:
 	DynamicMesh* m_meshBuilder;
@@ -39,4 +39,10 @@ private:
 
 	Ogre::Radian m_camAzimuth, m_camPolar;
 	float m_camRadius;
+
+	float m_keyboardDelay;
+	float m_keyboardDelayMax;
+
+	int m_currentSceneId;
+	int m_nbrScene;
 };
