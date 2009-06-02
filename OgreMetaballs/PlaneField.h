@@ -16,7 +16,9 @@ public:
 	void SetAxis(Vector3 axis) { m_axis = axis; }
 	void SetOrigin(float origin) { m_origin = origin; }
 
-	virtual ScalarFieldValue Sample(const Vector3& position) const override;
+	virtual float Scalar(const Vector3& position) const override;
+	virtual Vector3 Gradient(const Vector3& position) const override;
+	virtual ColourValue Color(const Vector3& position) const override;
 
 private:
 	Vector3 m_axis;

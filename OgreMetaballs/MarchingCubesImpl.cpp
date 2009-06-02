@@ -54,11 +54,40 @@ void MarchingCubesImpl::Initialize(float samplingSpaceSize, float samplingResolu
 			}
 		}
 	}
+
+	m_samplingGridCubes.clear();
+	m_samplingGridCubes.resize((m_nbrSamples-1) * (m_nbrSamples-1) * (m_nbrSamples-1));
+
+	for(int i=0; i<m_nbrSamples-1; i++)
+	{
+		for(int j=0; j<m_nbrSamples-1; j++)
+		{			
+			for(int k=0; k<m_nbrSamples-1; k++)
+			{
+				SamplingGridCube& cube = GetGridCube(i,j,k);
+
+				//Store the vertices of the cube defined by i,j and k
+				cube.Vertices[0] = &GetGridVertice(i  ,j+1,k);
+				cube.Vertices[1] = &GetGridVertice(i+1,j+1,k);
+				cube.Vertices[2] = &GetGridVertice(i+1,j  ,k);
+				cube.Vertices[3] = &GetGridVertice(i  ,j  ,k);
+				cube.Vertices[4] = &GetGridVertice(i  ,j+1,k+1);
+				cube.Vertices[5] = &GetGridVertice(i+1,j+1,k+1);
+				cube.Vertices[6] = &GetGridVertice(i+1,j  ,k+1);
+				cube.Vertices[7] = &GetGridVertice(i  ,j  ,k+1);
+			}
+		}
+	}
 }
 
 SamplingGridVertice& MarchingCubesImpl::GetGridVertice(int i, int j, int k)
 {
 	return m_samplingGridVertices[i + j * m_nbrSamples + k * m_nbrSamples * m_nbrSamples];
+}
+
+SamplingGridCube& MarchingCubesImpl::GetGridCube(int i, int j, int k)
+{
+	return m_samplingGridCubes[i + j * (m_nbrSamples-1) + k * (m_nbrSamples-1) * (m_nbrSamples-1)];
 }
 
 void MarchingCubesImpl::CreateMesh()
@@ -72,6 +101,7 @@ void MarchingCubesImpl::CreateMesh()
 	//For each cube defined by the grid, emit geometry if the cube intersect the surface.
 	March();
 
+	//Add a dummy triangle to avoid empty mesh     
 	Vertex v;
 	m_meshBuilder->AddVertex(v);
 	m_meshBuilder->AddVertex(v);
@@ -85,62 +115,37 @@ void MarchingCubesImpl::CreateMesh()
 
 void MarchingCubesImpl::SampleSpace()
 {
+	//the openmp parallel for expect signed loop counter
+	int size = m_samplingGridVertices.size();
+
 	#if USE_OPENMP
 	#pragma omp parallel for  
 	#endif
-
-	for(int i=0; i<m_nbrSamples; i++)
+	for(int i=0; i<size; i++)
 	{		
-		for(int j=0; j<m_nbrSamples; j++)
-		{
-			for(int k=0; k<m_nbrSamples; k++)
-			{
-				//Get the grid vertice
-				SamplingGridVertice& vertice = GetGridVertice(i,j,k);
-				//Sample the field value at the vertice
-                vertice.FieldValue =  GetScalarField()->Sample(vertice.Position);
-			}
-		}
+		//The indirection created with 'vertice' actually improve performances
+		SamplingGridVertice& vertice = m_samplingGridVertices[i];
+		vertice.ScalarValue =  GetScalarField()->Scalar(vertice.Position);
 	}
 }
 
 void MarchingCubesImpl::March()
 {
-	for(int i=0; i<m_nbrSamples-1; i++)
+	int size = m_samplingGridCubes.size();
+	for(int i=0; i<size; i++)
 	{
-		for(int j=0; j<m_nbrSamples-1; j++)
-		{			
-			for(int k=0; k<m_nbrSamples-1; k++)
-			{
-				SampleCube(j,i,k);
-			}
-		}
+		SampleCube(m_samplingGridCubes[i]);
 	}
 }
 
-void MarchingCubesImpl::SampleCube(int i, int j, int k)
+void MarchingCubesImpl::SampleCube(SamplingGridCube& cube)
 {
-	static SamplingGridVertice* cubeVertices[8];
-
-	//Store the vertices of the cube defined by i,j and k
-	cubeVertices[0] = &GetGridVertice(i  ,j+1,k);
-	cubeVertices[1] = &GetGridVertice(i+1,j+1,k);
-
-	cubeVertices[3] = &GetGridVertice(i  ,j  ,k);
-	cubeVertices[2] = &GetGridVertice(i+1,j  ,k);
-
-	cubeVertices[4] = &GetGridVertice(i  ,j+1,k+1);
-	cubeVertices[5] = &GetGridVertice(i+1,j+1,k+1);
-
-	cubeVertices[7] = &GetGridVertice(i  ,j  ,k+1);
-	cubeVertices[6] = &GetGridVertice(i+1,j  ,k+1);
-
 	//Build a index to determine the state of the cube. 
 	//The #n bit is set to 1 if the vertice #n is inside of the surface.
 	int cubeIndex = 0;
 	for (int n=0; n<8; n++)
 	{
-		if (cubeVertices[n]->FieldValue.Scalar <= m_samplingThreshold) 
+		if (cube.Vertices[n]->ScalarValue <= m_samplingThreshold) 
 			cubeIndex |= 1<<n;
 	}
 
@@ -161,19 +166,19 @@ void MarchingCubesImpl::SampleCube(int i, int j, int k)
 		if(intersectionList & 1<<n)
 		{
 			//Store the vertices corresponding to the edge.
-			const SamplingGridVertice* cubeVertice0 = cubeVertices[MarchingCubesData::GetVertexInEdge(n,0)];
-			const SamplingGridVertice* cubeVertice1 = cubeVertices[MarchingCubesData::GetVertexInEdge(n,1)];
+			const SamplingGridVertice* cubeVertice0 = cube.Vertices[MarchingCubesData::GetVertexInEdge(n,0)];
+			const SamplingGridVertice* cubeVertice1 = cube.Vertices[MarchingCubesData::GetVertexInEdge(n,1)];
 
 			//Determine the position of the intersection along the edge by linear interpolation.
-			float d0 = abs(cubeVertice0->FieldValue.Scalar - m_samplingThreshold);
-			float d1 = abs(cubeVertice1->FieldValue.Scalar - m_samplingThreshold);
+			float d0 = abs(cubeVertice0->ScalarValue - m_samplingThreshold);
+			float d1 = abs(cubeVertice1->ScalarValue - m_samplingThreshold);
 			float lerp = d1 / (d0+d1);
 
 			//Generate the vertex at the intersection
 			Vertex triangleVertex;
 			triangleVertex.Position = lerp * cubeVertice0->Position + (1-lerp) * cubeVertice1->Position;
-			triangleVertex.Normal = lerp * cubeVertice0->FieldValue.Gradient + (1-lerp) * cubeVertice1->FieldValue.Gradient;
-			triangleVertex.Color = lerp * cubeVertice0->FieldValue.Color + (1-lerp) * cubeVertice1->FieldValue.Color;
+			triangleVertex.Normal = m_scalarField->Gradient(triangleVertex.Position);
+			triangleVertex.Color = lerp * m_scalarField->Color(cubeVertice0->Position) + (1-lerp) * m_scalarField->Color(cubeVertice1->Position);
 			
 			triangleVertex.Normal.normalise();
 

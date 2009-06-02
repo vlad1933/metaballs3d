@@ -4,8 +4,7 @@
 // AdditiveField
 //-----------------------------------
 
-AdditiveField::AdditiveField(ScalarField3D* field1,ScalarField3D* field2)
-: m_field1(field1), m_field2(field2)
+AdditiveField::AdditiveField()
 {
 }
 
@@ -13,21 +12,42 @@ AdditiveField::~AdditiveField()
 {
 }
 
-ScalarFieldValue AdditiveField::Sample(const Vector3& position) const 
+void AdditiveField::AddField(ScalarField3D* field)
 {
-	//Sample the two base fields
-	const ScalarFieldValue& v1 = m_field1->Sample(position);
-	const ScalarFieldValue& v2 = m_field2->Sample(position);
+	m_fields.push_back(field);
+}
 
-	ScalarFieldValue result;
+void AdditiveField::RemoveField(ScalarField3D* field)
+{	
+	FieldList::iterator iter = std::find(m_fields.begin(), m_fields.end(), field);
+	if(iter != m_fields.end())
+	{
+		m_fields.erase(iter);
+	}
+}
 
-	//Value and gradient are summed
-	result.Scalar = v1.Scalar + v2.Scalar;
-	result.Gradient = v1.Gradient + v2.Gradient;
+float AdditiveField::Scalar(const Vector3& position) const
+{
+	float scalar = 0;
+	for(size_t i = 0; i < m_fields.size(); ++i)
+	{
+		scalar += m_fields[i]->Scalar(position);
+	}
+	return scalar;
+}
 
-	//The color is linearly interpolated
-	float lerp = v1.Scalar / result.Scalar;
-	result.Color = v1.Color;//lerp * v1.Color + (1-lerp) * v2.Color;
+Vector3 AdditiveField::Gradient(const Vector3& position) const
+{
+	Vector3 gradient = Vector3::ZERO;
+	for(size_t i = 0; i < m_fields.size(); ++i)
+	{
+		gradient += m_fields[i]->Gradient(position);
+	}
+	return gradient;
+}
 
-	return result;
+ColourValue AdditiveField::Color(const Vector3& position) const
+{
+	//The color is uniform
+	return m_color;
 }

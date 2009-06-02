@@ -119,7 +119,7 @@
 				PreprocessorDefinitions="WIN32;_WINDOWS;"
 				RuntimeLibrary="2"
 				EnableFunctionLevelLinking="true"
-				OpenMP="false"
+				OpenMP="true"
 				WarningLevel="3"
 				DebugInformationFormat="3"
 			/>
@@ -173,20 +173,16 @@
 			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}"
 			>
 			<File
-				RelativePath=".\HeartField.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\HeartScene.cpp"
-				>
-			</File>
-			<File
 				RelativePath=".\OgreMain.cpp"
 				>
 			</File>
 			<Filter
 				Name="Scene"
 				>
+				<File
+					RelativePath=".\CascadeScene.cpp"
+					>
+				</File>
 				<File
 					RelativePath=".\MetaballsAbstractScene.cpp"
 					>
@@ -247,7 +243,7 @@
 						>
 						<Tool
 							Name="VCCLCompilerTool"
-							AssemblerOutput="4"
+							AssemblerOutput="0"
 							AssemblerListingLocation="asm"
 						/>
 					</FileConfiguration>
@@ -275,17 +271,13 @@
 				RelativePath=".\Common.h"
 				>
 			</File>
-			<File
-				RelativePath=".\HeartField.h"
-				>
-			</File>
-			<File
-				RelativePath=".\HeartScene.h"
-				>
-			</File>
 			<Filter
 				Name="Scene"
 				>
+				<File
+					RelativePath=".\CascadeScene.h"
+					>
+				</File>
 				<File
 					RelativePath=".\MetaballsAbstractScene.h"
 					>
@@ -359,12 +351,6 @@
 					>
 				</File>
 			</Filter>
-		</Filter>
-		<Filter
-			Name="Fichiers de ressources"
-			Filter="rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav"
-			UniqueIdentifier="{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}"
-			>
 		</Filter>
 	</Files>
 	<Globals>
