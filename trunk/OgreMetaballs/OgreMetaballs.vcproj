@@ -119,7 +119,7 @@
 				PreprocessorDefinitions="WIN32;_WINDOWS;"
 				RuntimeLibrary="2"
 				EnableFunctionLevelLinking="true"
-				OpenMP="true"
+				OpenMP="false"
 				WarningLevel="3"
 				DebugInformationFormat="3"
 			/>

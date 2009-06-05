@@ -5,7 +5,7 @@
 
 #include <vector>
 
-#define USE_OPENMP 1
+#define USE_OPENMP 0
 #if USE_OPENMP
 #include "omp.h"
 #endif
