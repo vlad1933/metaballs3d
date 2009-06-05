@@ -28,7 +28,6 @@ MetaballsFrameListener::MetaballsFrameListener(RenderWindow* win, Camera* cam, D
 	//Initialize the camera coordinates
 	m_camAzimuth = 0;
 	m_camPolar = 0;
-	m_camRadius = 140 * m_scene->GetSceneSize();
 
 	m_keyboardDelayMax = 2.0f;
 	m_keyboardDelay = 0; 
@@ -89,6 +88,8 @@ void MetaballsFrameListener::ResetScene(int sceneId)
 	m_marchingCube = new MarchingCubesImpl(m_meshBuilder);
 	m_marchingCube->SetScalarField(m_scene->GetScalarField());
 	m_marchingCube->Initialize(m_scene->GetSceneSize(), m_scene->GetSpaceResolution(), 1);
+
+    m_camRadius = 140 * m_scene->GetSceneSize();
 }
 
 bool MetaballsFrameListener::frameStarted(const FrameEvent& evt)

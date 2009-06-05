@@ -36,7 +36,6 @@ CascadeScene::~CascadeScene()
 {
 }
 
-
 void CascadeScene::CreateFields()
 {
 	m_finalField = new AdditiveField();
@@ -129,6 +128,6 @@ float CascadeScene::GetSceneSize() const
 
 float CascadeScene::GetSpaceResolution() const
 {
-	return 0.1f;
+	return 0.09f;
 }
 
