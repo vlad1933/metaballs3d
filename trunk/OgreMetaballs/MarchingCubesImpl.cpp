@@ -90,6 +90,20 @@ SamplingGridCube& MarchingCubesImpl::GetGridCube(int i, int j, int k)
 	return m_samplingGridCubes[i + j * (m_nbrSamples-1) + k * (m_nbrSamples-1) * (m_nbrSamples-1)];
 }
 
+void MarchingCubesImpl::AddField(ScalarField3D* field)
+{
+    m_fields.push_back(field);
+}
+
+void MarchingCubesImpl::RemoveField(ScalarField3D* field)
+{	
+    FieldList::iterator iter = std::find(m_fields.begin(), m_fields.end(), field);
+    if(iter != m_fields.end())
+    {
+        m_fields.erase(iter);
+    }
+}
+
 void MarchingCubesImpl::CreateMesh()
 {
 	//Begin the construction of the mesh

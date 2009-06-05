@@ -39,6 +39,8 @@ struct SamplingGridCube
 // MarchingCubesImpl
 //-----------------------------------
 
+typedef std::vector<ScalarField3D*> FieldList;
+
 class MarchingCubesImpl
 {
 public:
@@ -53,6 +55,9 @@ public:
 
 	const ScalarField3D* GetScalarField() const { return m_scalarField; }
 	void SetScalarField(const ScalarField3D* scalarField) { m_scalarField = scalarField; }
+
+    void AddField(ScalarField3D* field);
+    void RemoveField(ScalarField3D* field);
 
 protected:
 	void SampleSpace();
@@ -74,4 +79,6 @@ private:
 
 	DynamicMesh* m_meshBuilder;
 	const ScalarField3D* m_scalarField;	
+
+    FieldList m_fields;
 };
