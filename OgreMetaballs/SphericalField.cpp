@@ -7,7 +7,7 @@
 //-----------------------------------
 
 SphericalField::SphericalField(const Vector3& center, float radius)
-: m_center(center), m_radiusSquared(radius * radius), m_radius(radius)
+: m_center(center), m_radiusSquared(radius * radius), m_radius(radius), m_boundingBox(Vector3::ZERO, Vector3::ZERO)
 {
 }
 
@@ -18,7 +18,7 @@ SphericalField::~SphericalField()
 float SphericalField::Scalar(const Vector3& position) const
 {
 	//The scalar value is proportional to 1/r^2
-	float lengthSquared = position.squaredDistance(m_center);
+	float lengthSquared = position.squaredDistance(m_center)+0.0001f;
 	return m_radiusSquared / lengthSquared;
 }
 

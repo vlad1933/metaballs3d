@@ -208,6 +208,10 @@
 					>
 				</File>
 				<File
+					RelativePath=".\FieldCollection.cpp"
+					>
+				</File>
+				<File
 					RelativePath=".\FieldHelper.cpp"
 					>
 				</File>
@@ -304,6 +308,10 @@
 				>
 				<File
 					RelativePath=".\AdditiveField.h"
+					>
+				</File>
+				<File
+					RelativePath=".\FieldCollection.h"
 					>
 				</File>
 				<File
