@@ -9,7 +9,7 @@ AABBox::AABBox(Vector3 min, Vector3 max)
 {
 }
 
-bool AABBox::Collide(const AABBox& other)
+bool AABBox::Collide(const AABBox& other) const
 {
     return !(Min.x > other.Max.x || other.Min.x > Max.x ||
         Min.y > other.Max.y || other.Min.y > Max.y ||

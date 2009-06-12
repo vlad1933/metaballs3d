@@ -7,12 +7,23 @@
 #include "FieldHelper.h"
 
 //-----------------------------------
+// Helper
+//-----------------------------------
+
+int GetIdx3DGrid(int size, int i, int j ,int k)
+{
+    return i + j * size + k * size * size;
+}
+
+
+//-----------------------------------
 // MarchingCubesImpl
 //-----------------------------------
 
 MarchingCubesImpl::MarchingCubesImpl(DynamicMesh* meshBuilder)
 : m_meshBuilder(meshBuilder), m_scalarField(NULL)
 {
+    m_chunkDivisionLevel = 3;
 }
 
 
@@ -34,73 +45,89 @@ void MarchingCubesImpl::Initialize(float samplingSpaceSize, float samplingResolu
 
 	float samplingMinPos = -m_nbrSamples * m_samplingResolution / 2;
 
-	//Create and initialize the sampling grid
-	m_samplingGridVertices.clear();
-	m_samplingGridVertices.resize(m_nbrSamples * m_nbrSamples * m_nbrSamples);
+    //////////////////////////////////////////////////////////////////////////
+    //////////////////////////////////////////////////////////////////////////
 
-	//Iterate through every vertice in the grid
-	for(int i=0; i<m_nbrSamples; i++)
-	{
-		for(int j=0; j<m_nbrSamples; j++)
-		{
-			for(int k=0; k<m_nbrSamples; k++)
-			{
-				//Initialize the vertice to a default state
-				SamplingGridVertice& vertice = GetGridVertice(i,j,k);
-				vertice.Position = Vector3(
-					samplingMinPos + i * m_samplingResolution,
-					samplingMinPos + j * m_samplingResolution,
-					samplingMinPos + k * m_samplingResolution);
-			}
-		}
-	}
+    int nbrSamples = 64;
+    float sampleCubeSize = m_samplingSpaceSize / nbrSamples;
+    m_gridCubeSize = sampleCubeSize;
 
-	m_samplingGridCubes.clear();
-	m_samplingGridCubes.resize((m_nbrSamples-1) * (m_nbrSamples-1) * (m_nbrSamples-1));
+    m_nbrChunks = 1 << (m_chunkDivisionLevel+1);
+    m_nbrCubesPerChunk = nbrSamples / m_nbrChunks;
 
-	for(int i=0; i<m_nbrSamples-1; i++)
-	{
-		for(int j=0; j<m_nbrSamples-1; j++)
-		{			
-			for(int k=0; k<m_nbrSamples-1; k++)
-			{
-				SamplingGridCube& cube = GetGridCube(i,j,k);
+    float chunkSize = sampleCubeSize * m_nbrCubesPerChunk;
 
-				//Store the vertices of the cube defined by i,j and k
-				cube.Vertices[0] = &GetGridVertice(i  ,j+1,k);
-				cube.Vertices[1] = &GetGridVertice(i+1,j+1,k);
-				cube.Vertices[2] = &GetGridVertice(i+1,j  ,k);
-				cube.Vertices[3] = &GetGridVertice(i  ,j  ,k);
-				cube.Vertices[4] = &GetGridVertice(i  ,j+1,k+1);
-				cube.Vertices[5] = &GetGridVertice(i+1,j+1,k+1);
-				cube.Vertices[6] = &GetGridVertice(i+1,j  ,k+1);
-				cube.Vertices[7] = &GetGridVertice(i  ,j  ,k+1);
-			}
-		}
-	}
-}
+    m_samplingGridChunks.clear();
+    m_samplingGridChunks.resize(m_nbrChunks * m_nbrChunks * m_nbrChunks);
 
-SamplingGridVertice& MarchingCubesImpl::GetGridVertice(int i, int j, int k)
-{
-	return m_samplingGridVertices[i + j * m_nbrSamples + k * m_nbrSamples * m_nbrSamples];
-}
-
-SamplingGridCube& MarchingCubesImpl::GetGridCube(int i, int j, int k)
-{
-	return m_samplingGridCubes[i + j * (m_nbrSamples-1) + k * (m_nbrSamples-1) * (m_nbrSamples-1)];
-}
-
-void MarchingCubesImpl::AddField(ScalarField3D* field)
-{
-    m_fields.push_back(field);
-}
-
-void MarchingCubesImpl::RemoveField(ScalarField3D* field)
-{	
-    FieldList::iterator iter = std::find(m_fields.begin(), m_fields.end(), field);
-    if(iter != m_fields.end())
+    for(int i=0; i<m_nbrChunks; i++)
     {
-        m_fields.erase(iter);
+        for(int j=0; j<m_nbrChunks; j++)
+        {
+            for(int k=0; k<m_nbrChunks; k++)
+            {
+                SamplingGridChunk& chunk = m_samplingGridChunks[GetIdx3DGrid(m_nbrChunks, i,j,k)];
+                chunk.MinPos = Vector3(
+                    i * chunkSize,
+                    j * chunkSize,
+                    k * chunkSize
+                    );
+
+                chunk.MaxPos = Vector3(
+                    (i+1) * chunkSize,
+                    (j+1) * chunkSize,
+                    (k+1) * chunkSize
+                    );
+
+                InitializeChunk(chunk);
+            }
+        }
+    }
+}
+
+void MarchingCubesImpl::InitializeChunk(SamplingGridChunk& chunk)
+{
+    chunk.Vertices.clear();
+    chunk.Vertices.resize(m_nbrCubesPerChunk * m_nbrCubesPerChunk * m_nbrCubesPerChunk);
+
+    //Iterate through every vertice in the grid
+    for(int i=0; i<m_nbrCubesPerChunk; i++)
+    {
+        for(int j=0; j<m_nbrCubesPerChunk; j++)
+        {
+            for(int k=0; k<m_nbrCubesPerChunk; k++)
+            {
+                //Initialize the vertice to a default state
+                SamplingGridVertice& vertice = chunk.Vertices[GetIdx3DGrid(m_nbrCubesPerChunk, i,j,k)];
+                vertice.Position = Vector3(
+                    chunk.MinPos.x + i * m_gridCubeSize,
+                    chunk.MinPos.y + j * m_gridCubeSize,
+                    chunk.MinPos.z + k * m_gridCubeSize);
+            }
+        }
+    }
+
+    chunk.Cubes.clear();
+    chunk.Cubes.resize((m_nbrCubesPerChunk-1) * (m_nbrCubesPerChunk-1) * (m_nbrCubesPerChunk-1));
+
+    for(int i=0; i<m_nbrCubesPerChunk-1; i++)
+    {
+        for(int j=0; j<m_nbrCubesPerChunk-1; j++)
+        {			
+            for(int k=0; k<m_nbrCubesPerChunk-1; k++)
+            {
+                SamplingGridCube& cube = chunk.Cubes[GetIdx3DGrid(m_nbrCubesPerChunk-1, i,j,k)];
+
+                cube.Vertices[0] = &chunk.Vertices[GetIdx3DGrid(m_nbrCubesPerChunk, i  ,j+1,k)];
+                cube.Vertices[1] = &chunk.Vertices[GetIdx3DGrid(m_nbrCubesPerChunk, i+1,j+1,k)];
+                cube.Vertices[2] = &chunk.Vertices[GetIdx3DGrid(m_nbrCubesPerChunk, i+1,j  ,k)];
+                cube.Vertices[3] = &chunk.Vertices[GetIdx3DGrid(m_nbrCubesPerChunk, i  ,j  ,k)];
+                cube.Vertices[4] = &chunk.Vertices[GetIdx3DGrid(m_nbrCubesPerChunk, i  ,j+1,k+1)];
+                cube.Vertices[5] = &chunk.Vertices[GetIdx3DGrid(m_nbrCubesPerChunk, i+1,j+1,k+1)];
+                cube.Vertices[6] = &chunk.Vertices[GetIdx3DGrid(m_nbrCubesPerChunk, i+1,j  ,k+1)];
+                cube.Vertices[7] = &chunk.Vertices[GetIdx3DGrid(m_nbrCubesPerChunk, i  ,j  ,k+1)];
+            }
+        }
     }
 }
 
@@ -109,11 +136,20 @@ void MarchingCubesImpl::CreateMesh()
 	//Begin the construction of the mesh
 	GetMeshBuilder()->BeginMesh();
 
-	//Sample the scalar field value on each vertice of grid
-	SampleSpace();
+    ////Sample the scalar field value on each vertice of grid
+    //SampleSpace();
 
-	//For each cube defined by the grid, emit geometry if the cube intersect the surface.
-	March();
+    ResetChunksVertices();
+
+    FieldList fields = m_fields->GetFields();
+    int size = fields.size();
+    for(int i=0; i<size; i++)
+    {
+        SampleField(fields[i]);
+    }
+
+    ////For each cube defined by the grid, emit geometry if the cube intersect the surface.
+    March();
 
 	//Add a dummy triangle to avoid empty mesh     
 	Vertex v;
@@ -129,27 +165,60 @@ void MarchingCubesImpl::CreateMesh()
 
 void MarchingCubesImpl::SampleSpace()
 {
-	//the openmp parallel for expect signed loop counter
-	int size = m_samplingGridVertices.size();
-
-	#if USE_OPENMP
-	#pragma omp parallel for  
-	#endif
-	for(int i=0; i<size; i++)
+    int size = m_samplingGridVertices.size();
+    for(int i=0; i<size; i++)
 	{		
-		//The indirection created with 'vertice' actually improve performances
 		SamplingGridVertice& vertice = m_samplingGridVertices[i];
 		vertice.ScalarValue =  GetScalarField()->Scalar(vertice.Position);
 	}
 }
 
+void MarchingCubesImpl::ResetChunksVertices()
+{
+    int size = m_samplingGridChunks.size();
+    for(int i=0; i<size; i++)
+    {		
+        SamplingGridChunk& chunk = m_samplingGridChunks[i];
+        int size2 = chunk.Vertices.size();
+        for(int j=0; i<size2; i++)
+        {		
+            SamplingGridVertice& vertice = chunk.Vertices[j];
+            vertice.ScalarValue = 0;
+        }
+    }
+}
+
+void MarchingCubesImpl::SampleField(ScalarField3D* field)
+{
+    int size = m_samplingGridChunks.size();
+    for(int i=0; i<size; i++)
+    {		
+        SamplingGridChunk& chunk = m_samplingGridChunks[i];
+        if(field->BoundingBox()->Collide(AABBox(chunk.MinPos, chunk.MaxPos)))
+        {
+            int size2 = chunk.Vertices.size();
+            for(int j=0; i<size2; i++)
+            {		
+                SamplingGridVertice& vertice = chunk.Vertices[j];
+                vertice.ScalarValue += field->Scalar(vertice.Position);
+            }
+        }
+    }
+}
+
 void MarchingCubesImpl::March()
 {
-	int size = m_samplingGridCubes.size();
-	for(int i=0; i<size; i++)
-	{
-		SampleCube(m_samplingGridCubes[i]);
-	}
+    int size = m_samplingGridChunks.size();
+    for(int i=0; i<size; i++)
+    {		
+        SamplingGridChunk& chunk = m_samplingGridChunks[i];
+        int size2 = chunk.Cubes.size();
+        for(int j=0; i<size2; i++)
+        {		
+            SamplingGridCube& cube = chunk.Cubes[j];
+            SampleCube(cube);
+        }
+    }
 }
 
 void MarchingCubesImpl::SampleCube(SamplingGridCube& cube)

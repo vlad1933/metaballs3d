@@ -8,6 +8,8 @@
 #include "HeartScene.h"
 #include "CascadeScene.h"
 
+#include "SphericalField.h"
+
 //-----------------------------------
 // MetaballsFrameListener
 //-----------------------------------
@@ -82,11 +84,15 @@ void MetaballsFrameListener::ResetScene(int sceneId)
 		break;
 	}
 
+    FieldCollection* collection = new FieldCollection();
+    collection->AddField(new SphericalField(Vector3::ZERO, 1));
+
 	m_scene->CreateFields();
 
 	//Create the object responsible for the mesh creation
 	m_marchingCube = new MarchingCubesImpl(m_meshBuilder);
 	m_marchingCube->SetScalarField(m_scene->GetScalarField());
+    m_marchingCube->SetFields(collection);
 	m_marchingCube->Initialize(m_scene->GetSceneSize(), m_scene->GetSpaceResolution(), 1);
 
     m_camRadius = 140 * m_scene->GetSceneSize();
