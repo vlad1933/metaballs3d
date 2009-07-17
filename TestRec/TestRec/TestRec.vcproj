@@ -41,6 +41,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
+				AdditionalIncludeDirectories="C:\Metaballs\TestRec\include"
 				PreprocessorDefinitions="WIN32;_DEBUG;_CONSOLE"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
@@ -60,7 +61,9 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
+				AdditionalDependencies="lua5.1.lib"
 				LinkIncremental="2"
+				AdditionalLibraryDirectories="C:\Metaballs\TestRec"
 				GenerateDebugInformation="true"
 				SubSystem="1"
 				TargetMachine="1"
@@ -114,6 +117,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="2"
 				EnableIntrinsicFunctions="true"
+				AdditionalIncludeDirectories="C:\Metaballs\TestRec\include"
 				PreprocessorDefinitions="WIN32;NDEBUG;_CONSOLE"
 				RuntimeLibrary="2"
 				EnableFunctionLevelLinking="true"
@@ -133,6 +137,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				LinkIncremental="1"
+				AdditionalLibraryDirectories="C:\Metaballs\TestRec\TestRec"
 				GenerateDebugInformation="true"
 				SubSystem="1"
 				OptimizeReferences="2"
@@ -170,6 +175,10 @@
 			Filter="cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx"
 			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}"
 			>
+			<File
+				RelativePath=".\LuaManager.cpp"
+				>
+			</File>
 			<File
 				RelativePath=".\main.cpp"
 				>
@@ -221,6 +230,14 @@
 				>
 			</File>
 			<File
+				RelativePath=".\Lua.h"
+				>
+			</File>
+			<File
+				RelativePath=".\LuaManager.h"
+				>
+			</File>
+			<File
 				RelativePath=".\SceneManager.h"
 				>
 			</File>
@@ -262,6 +279,14 @@
 			Filter="rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav"
 			UniqueIdentifier="{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}"
 			>
+			<File
+				RelativePath=".\example.lua"
+				>
+			</File>
+			<File
+				RelativePath=".\rules.lua"
+				>
+			</File>
 		</Filter>
 	</Files>
 	<Globals>

@@ -14,9 +14,9 @@ public:
 	RuleManager(void);
 	~RuleManager(void);
 
-	const Rule& CreateRule(std::string name);
-	const Rule& GetRuleByName(const std::string& name) const;
+	Rule* CreateRule(const std::string& name);
+	Rule* GetRuleByName(const std::string& name);
 
 private:
-	std::vector<Rule> m_rules;
+	std::vector<Rule*> m_rules;
 };

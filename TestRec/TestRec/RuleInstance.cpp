@@ -1,6 +1,6 @@
 #include "RuleInstance.h"
 
-RuleInstance::RuleInstance(void)
+RuleInstance::RuleInstance(Rule* rule, float weight) : m_rule(rule), m_weight(weight)
 {
 }
 
