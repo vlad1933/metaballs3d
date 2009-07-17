@@ -1,6 +1,6 @@
 #include "Node.h"
 
-Node::Node(void)
+Node::Node(Rule* rule, const NodeState& state) : m_rule(rule), m_state(state)
 {
 }
 

@@ -12,8 +12,8 @@ public:
 	NodeState(void);
 	~NodeState(void);
 
-private:
+public:
 	Matrix4x4 m_transform;
 	ColorHSV m_color;
-	float other[4];
+	float m_other[4];
 };
