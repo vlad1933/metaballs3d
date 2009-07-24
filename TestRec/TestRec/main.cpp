@@ -3,38 +3,21 @@
 
 #include "RuleManager.h"
 #include "SceneManager.h"
+#include "LuaManager.h"
 
 int main()
 {
 	RuleManager ruleManager;
-    RuleInstance* instance;
-
-    Rule* start = ruleManager.CreateRule("Start");
-    Rule* forward = ruleManager.CreateRule("Forward");
-    Rule* turn = ruleManager.CreateRule("Turn");
-
-    instance = start->CreateInstance(1);
-    instance->AddChild(ruleManager.GetRuleByName("Forward"), Transform(0));
-	
-    instance = forward->CreateInstance(2);
-    instance->AddChild(ruleManager.GetRuleByName("Forward"), Transform(1));
-
-    instance = forward->CreateInstance(1);
-    instance->AddChild(ruleManager.GetRuleByName("Turn"), Transform(0.1f));
-
-    instance = turn->CreateInstance(1);
-    instance->AddChild(ruleManager.GetRuleByName("Forward"), Transform(0));
-    
+    ruleManager.ReadFile("example.lua");
+  
     SceneManager sceneManager;
-    sceneManager.Begin(start);
-    sceneManager.Update();
-    sceneManager.Update();
-    sceneManager.Update();
-    sceneManager.Update();
-    sceneManager.Update();
-    sceneManager.Update();
-    sceneManager.Update();
-    sceneManager.Update();
+    sceneManager.Begin(ruleManager.GetRuleByName("Start"));
+
+    int iterCount = 64;
+    for(int i=0; i<iterCount; i++)
+    {
+        sceneManager.Update();
+    }
 
 	return 0;
 }

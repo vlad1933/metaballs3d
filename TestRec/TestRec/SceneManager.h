@@ -17,6 +17,6 @@ public:
     void Update();
 
 private:
-    std::vector<Node*>  m_currentNodes;
-    std::vector<Node*>  m_pastNodes;
+    std::vector<Node*> m_currentNodes;
+    std::vector<Node*> m_pastNodes;
 };
