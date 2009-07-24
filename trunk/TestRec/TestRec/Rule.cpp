@@ -19,16 +19,16 @@ const RuleInstance* Rule::GetRandomRuleInstance() const
 {
     float rand = random() * m_totalInstancesWeight;
     size_t i;
-    for(i=0;rand>0 && i<m_instances.size(); i++)
+    for(i=0;rand>=0 && i<m_instances.size(); i++)
     {
-        rand -= m_instances[i].GetWeight();
+        rand -= m_instances[i]->GetWeight();
     }
-    return &m_instances[i-1];
+    return m_instances[i-1];
 }
 
 RuleInstance* Rule::CreateInstance(float weight)
 {
     m_totalInstancesWeight += weight;
-    m_instances.push_back(RuleInstance(this, weight)); 
-    return &m_instances.back();
+    m_instances.push_back(new RuleInstance(this, weight)); 
+    return m_instances.back();
 }

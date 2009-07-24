@@ -20,7 +20,7 @@ public:
 
 private:
 	std::string m_name;
-	std::vector<RuleInstance> m_instances;
+	std::vector<RuleInstance*> m_instances;
 
     float m_totalInstancesWeight;
 };

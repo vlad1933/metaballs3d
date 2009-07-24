@@ -176,10 +176,6 @@
 			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}"
 			>
 			<File
-				RelativePath=".\LuaManager.cpp"
-				>
-			</File>
-			<File
 				RelativePath=".\main.cpp"
 				>
 			</File>
@@ -219,6 +215,14 @@
 					>
 				</File>
 			</Filter>
+			<Filter
+				Name="Lua"
+				>
+				<File
+					RelativePath=".\LuaManager.cpp"
+					>
+				</File>
+			</Filter>
 		</Filter>
 		<Filter
 			Name="Fichiers d&apos;en-tête"
@@ -227,14 +231,6 @@
 			>
 			<File
 				RelativePath=".\Common.h"
-				>
-			</File>
-			<File
-				RelativePath=".\Lua.h"
-				>
-			</File>
-			<File
-				RelativePath=".\LuaManager.h"
 				>
 			</File>
 			<File
@@ -270,6 +266,18 @@
 				</File>
 				<File
 					RelativePath=".\Transform.h"
+					>
+				</File>
+			</Filter>
+			<Filter
+				Name="Lua"
+				>
+				<File
+					RelativePath=".\Lua.h"
+					>
+				</File>
+				<File
+					RelativePath=".\LuaManager.h"
 					>
 				</File>
 			</Filter>
