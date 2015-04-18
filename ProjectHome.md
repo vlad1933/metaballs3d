@@ -1,0 +1,1 @@
+Implementation of the marching cubes algorithm to create metaballs in realtime, using Ogre3D as a renderer.
